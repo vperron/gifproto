@@ -1,0 +1,23 @@
+// All rules can be found there: http://jscs.info/rules.html
+
+{
+  "preset": "airbnb",
+
+  // Don't force new line after blocks in arrays, calls, and properties
+  // This is the most permissive setting
+  "requirePaddingNewLinesAfterBlocks": {
+    "allExcept": ["inCallExpressions", "inArrayExpressions", "inProperties"]
+  },
+
+  // Allows trailing comma
+  "disallowTrailingComma": null,
+
+  "disallowMultipleSpaces": true,
+
+  "requireFunctionDeclarations": true,
+
+  "disallowOperatorBeforeLineBreak": ["+", "."],
+
+  // The snake_case will be allowed on object properties, useful for variables from API
+  "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties"
+}
