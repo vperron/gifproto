@@ -80,20 +80,15 @@ angular.module('app', [
     ctx.fillRect(0, 0, w, h);
 
     var origData = new Uint8ClampedArray(imageData.data);
-    var drawBlack = true;
-    setInterval(function() {
-      
-      if (drawBlack) {
-        redrawPixels(imageData.data, w, h, blackCb);
-      } else {
-        redrawPixels(imageData.data, w, h, identityCb);
-      }
-      ctx.putImageData(imageData, 0, 0);
 
-      imageData.data.set(origData);
-      drawBlack = ! drawBlack;
-    }, 1000 / 10);
+    // Corners
+    var divider = h / 20;
+    var layer = ctx.createImageData(w, divider);
 
-
+    for(var u=0; u<h/divider; u=u+1) {
+      var pixels = imageData.data.subarray(u*divider*w*4, (u+1)*divider*w*4);
+      layer.data.set(pixels);
+      ctx.putImageData(layer, 0, u*divider);
+    }
   };
 });
