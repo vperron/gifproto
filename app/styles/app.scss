@@ -1,0 +1,21 @@
+/* app.scss */
+
+/**
+  Prerequisites
+**/
+@import "bootstrap-sass/assets/stylesheets/bootstrap/variables";
+@import "bootstrap-sass/assets/stylesheets/bootstrap/mixins";
+@import 'variables';
+
+
+/**
+  Vendor files
+**/
+@import 'bootstrap';
+@import 'font-awesome/scss/font-awesome.scss';
+
+
+/**
+  Application files
+**/
+@import 'overrides';

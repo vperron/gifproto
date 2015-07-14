@@ -1,0 +1,29 @@
+{
+  "name": "gifproto",
+  "version": "0.3.0",
+  "main": "./lib/index",
+  "private": true,
+  "dependencies": {
+    "shimp-js": "^0.1.1"
+  },
+  "peerDependencies": {
+    "angular-ui-router": "^0.2.15",
+    "bootstrap-sass": "^3.3.5",
+    "font-awesome": "^4.3.0",
+    "moment": "^2.10.3"
+  },
+  "devDependencies": {
+    "angular-mocks": "^1.4.1",
+    "blease-js": "^0.3.1"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "files": [
+    "lib",
+    "locale/**/*.po",
+    "package.json",
+    "README.rst"
+  ],
+  "scripts": {}
+}
