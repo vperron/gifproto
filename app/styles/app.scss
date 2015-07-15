@@ -19,3 +19,7 @@
   Application files
 **/
 @import 'overrides';
+
+#children canvas {
+  vertical-align: top;
+}
