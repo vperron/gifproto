@@ -1,27 +1,40 @@
-'use strict';
 
-var angular = require('shimp-js').angular();
-require('angular-ui-router');
+  function identityCb(rgba) {
+    return rgba;
+  }
 
-angular.module('app', [
-  'ui.router',
-  'app.templates',
-])
+  function blackCb(rgba) {
+    return [0, 0, 0, 0xff];
+  }
 
-.config(function($stateProvider, $urlRouterProvider) {
+  function getPixel(arr, row, col) {
+    return [
+      arr[row + col + 0],
+      arr[row + col + 1],
+      arr[row + col + 2],
+      arr[row + col + 3],
+    ];
+  }
 
-  $urlRouterProvider.when('/', '/main');
-  $urlRouterProvider.when('', '/main');
+  function setPixel(arr, row, col, pixel) {
+    arr[row + col + 0] = pixel[0];
+    arr[row + col + 1] = pixel[1];
+    arr[row + col + 2] = pixel[2];
+    arr[row + col + 3] = pixel[3];
+  }
 
-  $stateProvider
-  .state('main', {
-    url: '/main',
-    controller: 'MyCtrl',
-    templateUrl: 'app/templates/main.jade',
-  });
-})
+  function redrawPixels(data, w, h, callback) {
+    for (var y=0; y<h; y=y+1) {
+      for (var x=0; x<w; x=x+1) {
+        var row = y * (w*4);
+        var col = 4*x;
 
-.controller('MyCtrl', function() {
+        var pixel = getPixel(data, row, col);
+        pixel = callback(pixel);
+        setPixel(data, row, col, pixel);
+      }
+    }
+  }
 
   var element = document.getElementById('image');
   element.style.display = 'none'; // hide the image source for now
@@ -55,12 +68,30 @@ angular.module('app', [
       children.appendChild(canvas);
       var context = canvas.getContext('2d');
       images[i] = {
-        canvas: canvas,
         context: context,
         imageData: context.createImageData(w, divider),
       };
-    }
+    };
 
+    var n = 0;
+    function redraw() {
+      console.log('redrawing...');
+      var index = 0;
+      var pixels = imageData.data.subarray(index*divider*w*4, (index+1)*divider*w*4);
+
+      // Subcanvasses
+      var item = images[index];
+      if (n % freq) {
+        item.imageData.data.set(pixels);
+        item.context.canvas.width = w;
+        item.context.canvas.height = divider;
+        item.context.putImageData(item.imageData, 0, 0);
+      } else {
+        item.context.fillStyle = '#dedede';
+        item.context.fillRect(0, 0, w, divider);
+      }
+      n = n + 1;
+    }
 
     function drawWholeImage() {
       for(var index=0; index<h/divider; index=index+1) {
@@ -75,31 +106,22 @@ angular.module('app', [
       }
     }
 
-    var n = 0;
     var index = 0;
     var pixels = imageData.data.subarray(index*divider*w*4, (index+1)*divider*w*4);
 
     function switchFirst() {
+      console.log('redrawing...');
+
+      // Subcanvasses
       var item = images[index];
-      if (n % freq === 1) {
-        console.log('switching alpha to 1');
-        item.context.globalAlpha = 1.0;
+      console.log('n = ', n, 'freq = ', freq, 'n % freq = ', n%freq);
+      if (n % freq == 1) {
         item.imageData.data.set(pixels);
         item.context.putImageData(item.imageData, 0, 0);
-        item.context.restore();
       }
-      if (n % freq === 0) {
-        console.log('switching alpha to 0');
-        item.context.globalAlpha = 0;
-        item.imageData.data.set(pixels);
-        item.context.putImageData(item.imageData, 0, 0);
-        item.context.restore();
+      if (n % freq == 0) {
+        item.context.fillStyle = '#dedede';
+        item.context.fillRect(0, 0, w, divider);
       }
       n = n + 1;
     }
-
-    drawWholeImage();
-    // redraw();
-    setInterval(switchFirst, 1000/freq);
-  };
-});
